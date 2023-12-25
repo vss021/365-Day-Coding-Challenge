@@ -82,4 +82,5 @@ int main() {
     int det = solution.determinantOfMatrix(matrix, n);
     cout << "Determinant: " << det << endl;
 
-    return 
+    return 0;
+}
