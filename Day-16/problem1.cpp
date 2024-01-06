@@ -1,92 +1,63 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
-#include <unordered_map>
 
 using namespace std;
 
 class Solution {
 private:
-    unordered_map<int, int> dp;
+    int N;
+    int memo[1000001];
+
+private:
+    // Recursive function to calculate the maximum profit
+    int calculateMaxProfit(vector<vector<int>>& jobs, int index) {
+        // Base case: if index is beyond the last job, return 0
+        if (index >= N)
+            return 0;
+
+        // If the result for this index is already calculated, return it
+        if (memo[index])
+            return memo[index];
+
+        int lo = 0, hi = N - 1, nextJobTime = N + 1;
+
+        // Binary search to find the next job with start time greater than or equal to the current job's end time
+        while (lo <= hi) {
+            int mid = (lo + hi) >> 1;
+            if (jobs[mid][0] >= jobs[index][1]) {
+                nextJobTime = mid;
+                hi = mid - 1;
+            } else {
+                lo = mid + 1;
+            }
+        }
+
+        // Calculate the maximum profit either by including or excluding the current job
+        int includingCurrentJobProfit = jobs[index][2] + calculateMaxProfit(jobs, nextJobTime);
+        int excludingCurrentJobProfit = calculateMaxProfit(jobs, index + 1);
+
+        // Memoize the result for this index
+        memo[index] = max(includingCurrentJobProfit, excludingCurrentJobProfit);
+
+        return memo[index];
+    }
 
 public:
     int jobScheduling(vector<int>& startTime, vector<int>& endTime, vector<int>& profit) {
-        int n = startTime.size();
-        vector<vector<int>> jobs(n, vector<int>(3));
+        N = startTime.size();
+        vector<vector<int>> jobs;
 
-        for (int i = 0; i < n; i++) {
-            jobs[i] = {startTime[i], endTime[i], profit[i]};
+        // Create a vector of jobs with start time, end time, and profit
+        for (int i = 0; i < N; ++i) {
+            jobs.push_back({startTime[i], endTime[i], profit[i]});
         }
 
-        sort(jobs.begin(), jobs.end(), [](const auto& a, const auto& b) {
-            return a[0] < b[0];
-        });
+        // Sort the jobs based on their start times
+        sort(begin(jobs), end(jobs));
 
-        // Top-Down (Recursive with Memoization) Solution
-        // return topDownMemo(0, jobs);
-
-        // Bottom-Up Solution
-        // return bottomUp(jobs);
-
-        // Top-Down (Recursive) Solution
-        // return topDownRecursive(0, jobs);
-    }
-
-private:
-    // Top-Down (Recursive with Memoization) solution
-    int topDownMemo(int cur, vector<vector<int>>& jobs) {
-        if (cur == jobs.size()) {
-            return 0;
-        }
-
-        if (dp.find(cur) != dp.end()) {
-            return dp[cur];
-        }
-
-        int next = findNext(cur, jobs);
-        int inclProf = jobs[cur][2] + (next == -1 ? 0 : topDownMemo(next, jobs));
-        int exclProf = topDownMemo(cur + 1, jobs);
-
-        dp[cur] = max(inclProf, exclProf);
-        return dp[cur];
-    }
-
-    // Helper function for recursive solution
-    int findNext(int cur, vector<vector<int>>& jobs) {
-        for (int next = cur + 1; next < jobs.size(); next++) {
-            if (jobs[next][0] >= jobs[cur][1]) {
-                return next;
-            }
-        }
-        return -1;
-    }
-
-    // Bottom-Up solution
-    int bottomUp(vector<vector<int>>& jobs) {
-        vector<int> dp(jobs.size(), 0);
-
-        for (int i = jobs.size() - 1; i >= 0; i--) {
-            int next = findNext(i, jobs);
-            int inclProf = jobs[i][2] + (next == -1 ? 0 : dp[next]);
-            int exclProf = (i + 1 < jobs.size()) ? dp[i + 1] : 0;
-
-            dp[i] = max(inclProf, exclProf);
-        }
-
-        return dp[0];
-    }
-
-    // Top-Down (Recursive) solution
-    int topDownRecursive(int cur, vector<vector<int>>& jobs) {
-        if (cur == jobs.size()) {
-            return 0;
-        }
-
-        int next = findNext(cur, jobs);
-        int inclProf = jobs[cur][2] + (next == -1 ? 0 : topDownRecursive(next, jobs));
-        int exclProf = topDownRecursive(cur + 1, jobs);
-
-        return max(inclProf, exclProf);
+        // Start the recursive calculation of maximum profit from the first job
+        return calculateMaxProfit(jobs, 0);
     }
 };
 
