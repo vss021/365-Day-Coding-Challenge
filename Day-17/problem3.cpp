@@ -1,60 +1,76 @@
 #include <iostream>
-#include <vector>
 #include <climits>
-#include <algorithm>
 
 using namespace std;
 
-int kadane(const vector<int>& arr) {
-    int currentSum = 0;
-    int maxSum = INT_MIN;
+long long int maxSubArraySum(long long int a[], int size) {
+    long long int max_so_far = INT_MIN, max_ending_here = 0;
 
-    for (int num : arr) {
-        // Kadane's algorithm to find the maximum subarray sum
-        currentSum = max(num, currentSum + num);
-        maxSum = max(maxSum, currentSum);
+    for (int i = 0; i < size; i++) {
+        max_ending_here = max_ending_here + a[i];
+        if (max_so_far < max_ending_here)
+            max_so_far = max_ending_here;
+
+        // Reset to 0 if the current subarray sum becomes negative
+        if (max_ending_here < 0)
+            max_ending_here = 0;
     }
-
-    return maxSum;
+    return max_so_far;
 }
 
 void solve() {
-    // Input for array 'a'
-    int n;
+    int n, m;
     cin >> n;
-    vector<int> a(n);
+
+    // Input array A (left)
+    long long int arrAL[n], arrAF[n + 1], minofA = LLONG_MIN;
     for (int i = 0; i < n; i++) {
-        cin >> a[i];
+        cin >> arrAL[i];
+        arrAF[i + 1] = arrAL[i];
+
+        // Find the minimum element in array A
+        minofA = max(minofA, arrAL[i]);
     }
 
-    // Input for array 'b'
-    int m;
     cin >> m;
-    vector<int> b(m);
-    int positiveSumB = 0;
+
+    // Input array B
+    long long int arrB[m], maxi = 0;
     for (int i = 0; i < m; i++) {
-        cin >> b[i];
-        if (b[i] > 0) {
-            positiveSumB += b[i];
+        cin >> arrB[i];
+
+        // Calculate the sum of positive elements in array B
+        if (arrB[i] > 0) {
+            maxi += arrB[i];
+        }
+
+        // Update the minimum element in array A
+        if (arrB[i] > minofA) {
+            minofA = arrAL[i];
         }
     }
 
-    // Calculate the maximum subarray sum starting from the beginning
-    int maxStartSum = kadane(a);
+    // If the minimum element in A is non-positive, the result is the minimum element
+    if (minofA <= 0) {
+        cout << minofA << endl;
+    } else {
+        // Add the sum of positive elements in B to the end and beginning of array A
+        arrAL[n] = maxi;
+        arrAF[0] = maxi;
 
-    // Reverse array 'a' to calculate the maximum subarray sum starting from the end
-    reverse(a.begin(), a.end());
-    int maxEndSum = kadane(a);
+        // Calculate the maximum subarray sum considering both array A (left) and array A (right)
+        long long int maxi2 = max(maxSubArraySum(arrAL, n + 1), maxSubArraySum(arrAF, n + 1));
 
-    // Determine the final answer
-    int finalResult = max(maxStartSum, maxEndSum) + positiveSumB;
-
-    cout << finalResult << endl;
+        cout << maxi2 << endl;
+    }
 }
 
 int main() {
-    // Example usage
-    solve();
+    int t;
+    cin >> t;
+    while (t--) {
+        solve();
+    }
 
     return 0;
 }
