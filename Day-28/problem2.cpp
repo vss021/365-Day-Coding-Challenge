@@ -7,8 +7,8 @@ class Solution {
 public:
     // Recursive Solution
     int climbStairsRecursive(int n) {
-        if (n <= 1) {
-            return n;
+        if (n == 0 || n == 1) {
+            return 1;
         }
         return climbStairsRecursive(n - 1) + climbStairsRecursive(n - 2);
     }
@@ -20,8 +20,8 @@ public:
     }
 
     int climbStairsMemoizationHelper(int n, unordered_map<int, int>& memo) {
-        if (n <= 1) {
-            return n;
+        if (n == 0 || n == 1) {
+            return 1;
         }
 
         // Check if the result is already memoized
@@ -36,8 +36,7 @@ public:
     }
 
     // Iterative Solution
-    int climbStairs(int n) {
-        // base condition
+    int climbStairsIterative(int n) {
         if (n <= 1) {
             return n;
         }
@@ -52,15 +51,15 @@ public:
 
         return ans;
     }
+
+    // Entry point for calling the memoization solution
+    int climbStairs(int n) {
+        return climbStairsMemoization(n);
+    }
 };
 
 int main() {
     Solution solution;
-
-    // Test the iterative solution
-    int n_iterative = 5;
-    int result_iterative = solution.climbStairs(n_iterative);
-    cout << "Iterative solution: Number of ways to climb " << n_iterative << " stairs is " << result_iterative << "\n";
 
     // Test the recursive solution
     int n_recursive = 5;
@@ -71,6 +70,11 @@ int main() {
     int n_memoization = 5;
     int result_memoization = solution.climbStairsMemoization(n_memoization);
     cout << "Memoization solution: Number of ways to climb " << n_memoization << " stairs is " << result_memoization << "\n";
+
+    // Test the iterative solution
+    int n_iterative = 5;
+    int result_iterative = solution.climbStairsIterative(n_iterative);
+    cout << "Iterative solution: Number of ways to climb " << n_iterative << " stairs is " << result_iterative << "\n";
 
     return 0;
 }
