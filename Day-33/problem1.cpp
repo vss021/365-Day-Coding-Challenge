@@ -1,7 +1,6 @@
 #include <vector>
 #include <string>
 #include <unordered_set>
-
 #include <iostream>
 using namespace std;
 
@@ -13,7 +12,6 @@ public:
         backTrack(arr, "", 0, maxLength);
         return maxLength;
     }
-
 private:
     void backTrack(vector<string>& arr, string current, int start, int& maxLength) {
         // Update maxLength if the current combination has a greater length
@@ -27,26 +25,21 @@ private:
                 backTrack(arr, current + arr[i], i + 1, maxLength);
         }
     }
-
     bool isValid(string& currentString, string& newString) {
         unordered_set<char> charSet;
-
         // Check each character in newString for validity
         for (char ch : newString) {
             // If the character is already in charSet, the combination is invalid
             if (charSet.count(ch) > 0) {
                 return false;
             }
-
             // Add the character to charSet
             charSet.insert(ch);
-
             // If the character is already in currentString, the combination is invalid
             if (currentString.find(ch) != string::npos) {
                 return false;
             }
         }
-
         // If no issues found, the combination is valid
         return true;
     }
