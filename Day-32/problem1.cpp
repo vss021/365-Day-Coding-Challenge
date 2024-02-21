@@ -1,5 +1,6 @@
 #include <vector>
 #include <iostream>
+using namespace std;
 class Solution {
 private:
     // Vector to store all paths with the required sum
