@@ -46,7 +46,6 @@ public:
     int majorityElementBoyerMoore(vector<int>& nums) {
         int candidate = 0; // Initialize the candidate
         int count = 0; // Initialize the count of the candidate
-        
         // Iterate through the vector
         for (int num : nums) {
             if (count == 0) {
@@ -60,7 +59,6 @@ public:
                 }
             }
         }
-        
         // Verifying if the candidate is the majority element
         count = 0;
         for (int num : nums) {
@@ -68,7 +66,6 @@ public:
                 count++; // Counting the occurrences of the candidate
             }
         }
-        
         // If the candidate occurs more than n/2 times, it's the majority element
         if (count > nums.size() / 2) {
             return candidate;
