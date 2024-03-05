@@ -10,7 +10,6 @@ class Solution {
 public:
     // Time Complexity (TC): O(1) - Constant time complexity because the board size is fixed (9x9)
     // Space Complexity (SC): O(1) - Constant space complexity due to the fixed-size unordered_set
-    
     bool isValidSudoku(vector<vector<char>>& board) {
         // Check rows, columns, and sub-boxes for validity
         for (int i = 0; i < 9; ++i) {
@@ -19,7 +18,6 @@ public:
         }
         return true;
     }
-
 private:
     // Check if a row is valid
     bool isValidRow(const vector<vector<char>>& board, int row) {
@@ -33,7 +31,6 @@ private:
         }
         return true;
     }
-
     // Check if a column is valid
     bool isValidColumn(const vector<vector<char>>& board, int col) {
         unordered_set<char> seen;
@@ -46,7 +43,6 @@ private:
         }
         return true;
     }
-
     // Check if a 3x3 sub-box is valid
     bool isValidSubBox(const vector<vector<char>>& board, int box) {
         unordered_set<char> seen;
